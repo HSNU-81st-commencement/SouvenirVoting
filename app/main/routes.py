@@ -1,10 +1,11 @@
 from os import listdir
 from flask import render_template, redirect, request, make_response, flash
-from werkzeug.wrappers import response
+import flask
 from ..db import db
 from ..forms import VoteForm, PersonalDataForm
 from ..pages import pages
 from . import main_bp
+from .db_helper import add_record
 
 
 @main_bp.before_app_first_request
@@ -40,18 +41,17 @@ def personal_data_page():
 @main_bp.route("/vote/<int:page>", methods=["GET", "POST"])
 def vote_page(page=1):
     form = VoteForm()
-    form.choices.choices = pages[page]["choices"]
+    form.choices.choices = pages[page - 1]
     if request.method == "GET":
         return render_template(
             "vote_base.html",
             page=page,
             form=form,
-            name=pages[page]["name"]
         )
     if request.method == "POST":
         if form.validate_on_submit():
             choice = form.choices.data
-            if page + 1 == len(pages):
+            if page == len(pages):
                 response = make_response(redirect("/end"))
             else:
                 response = make_response(redirect("/vote/%d" % (page + 1)))
@@ -64,5 +64,16 @@ def vote_page(page=1):
 
 @main_bp.route("/end", methods=["GET"])
 def process_all():
-    # process
+    student_id = request.cookies.get("student_id")
+    classnum = request.cookies.get("classnum")
+    votes = []
+    for i in range(1, 9):   # 8 items
+        votes.append({i: request.cookies.get(str(i))})
+    print(votes)
+    if not (all([all(vote.values()) for vote in votes]) and student_id and classnum):
+        flash("Data is not complete.", category="alert")
+    else:
+        flash("Success", "success")
+        add_record(student_id, classnum, votes)
     return render_template("end.html")
+    

@@ -16,8 +16,14 @@
 
 <body>
     <div class="container">
-        <h1>Vote: {{ name }}</h1>
         <div id="messages">{{ display_msg(messages) }}</div>
+        {% if page == 2 or page == 8 %}
+        {# customize for 2 and 8 #}
+        <img src="/static/imgs/{{ page | string }}_1.jpg">
+        <img src="/static/imgs/{{ page | string }}_2.jpg">
+        {% else %}
+        <img src="/static/imgs/{{ page | string }}.jpg">
+        {% endif %}
         <div>
             <form action="/vote/{{ page | string }}" method="post">
                 {{ form.csrf_token }}
