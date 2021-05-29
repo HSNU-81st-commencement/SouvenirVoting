@@ -69,11 +69,10 @@ def process_all():
     votes = []
     for i in range(1, 9):   # 8 items
         votes.append({i: request.cookies.get(str(i))})
-    print(votes)
     if not (all([all(vote.values()) for vote in votes]) and student_id and classnum):
-        flash("Data is not complete.", category="alert")
+        flash("資料不完整，請重新填寫", category="alert")
     else:
-        flash("Success", "success")
+        flash("你已完成投票", category="success")
         add_record(student_id, classnum, votes)
     return render_template("end.html")
     

@@ -31,6 +31,7 @@ select {
     margin-bottom: 5px;
     background-color: white;
     height: 25px;
+    width: 400px;
     border-radius: 3px;
     outline: none;
 }
@@ -48,4 +49,10 @@ button {
 
 button:hover {
     opacity: 0.8;
+}
+
+@media only screen and (max-width: 800px) {
+    select {
+        width: 200px;
+    }
 }

@@ -1,26 +1,28 @@
 from flask_wtf import FlaskForm
-from wtforms import SelectField, SubmitField, IntegerField
+from wtforms import SelectField, SubmitField, DecimalField
 from wtforms.validators import DataRequired, NumberRange
 
 
 class PersonalDataForm(FlaskForm):
-    student_id = IntegerField(
+    student_id = DecimalField(
         "",
-        validators=[DataRequired(), NumberRange(min=700000, max=1000000)],
+        validators=[
+            DataRequired(message="請填學號"),
+            NumberRange(min=700000, max=1000000, message="請填正確學號"),
+        ],
         render_kw={"placeholder": "學號"},
     )
-    classnum = IntegerField(
+    classnum = DecimalField(
         "",
-        validators=[DataRequired(), NumberRange(min=1478, max=1600)],
+        validators=[
+            DataRequired(message="請填原班級"),
+            NumberRange(min=1478, max=1553, message="請填正確班號"),
+        ],
         render_kw={"placeholder": "原班級"},
     )
     submit = SubmitField("送出")
 
-    # TODO validate student_id and classnum
-
 
 class VoteForm(FlaskForm):
-    choices = SelectField(
-        "", validators=[DataRequired()], render_kw={"placeholder": "選擇"}
-    )
+    choices = SelectField("", validators=[DataRequired()])
     submit = SubmitField("送出")

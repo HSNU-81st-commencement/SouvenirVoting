@@ -3,7 +3,7 @@
     {% if messages %}
     {% for category, message in messages %}
         <div class="flash-message {{ category }}">
-            <span class="closebtn" onclick="hide(this.parentElement)">&times;</span>
+            <span class="closebtn" onclick="hide(this.parentElement)">&#10003;</span>
             <span>{{ message }}</span>
         </div>
     {% endfor %}
