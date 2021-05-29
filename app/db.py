@@ -7,7 +7,7 @@ db = SQLAlchemy()
 class Voters(db.Model):
     __tablenmame__ = "voters"
     ID = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer, nullable=False, unique=True)
+    student_id = db.Column(db.Integer, nullable=False)
     classnum = db.Column(db.Integer, nullable=False)
     votes = db.relationship("Votes")
 
