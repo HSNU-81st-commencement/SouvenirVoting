@@ -20,7 +20,7 @@ class PersonalDataForm(FlaskForm):
 
 
 class VoteForm(FlaskForm):
-    choice = SelectField(
+    choices = SelectField(
         "", validators=[DataRequired()], render_kw={"placeholder": "選擇"}
     )
     submit = SubmitField("送出")

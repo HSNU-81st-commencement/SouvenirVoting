@@ -1,12 +1,35 @@
+{% from 'msg.jinja' import display_msg %}
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/index.css">
+    <link rel="stylesheet" href="/static/messages.css">
+    <link rel="stylesheet" href="/static/inputs.css">
+    <script src="/static/msg.js"></script>
     <title>Vote</title>
 </head>
+
 <body>
-    <h1>Vote: {{  }}</h1>
+    <div class="container">
+        <h1>Vote: {{ name }}</h1>
+        <div id="messages">{{ display_msg(messages) }}</div>
+        <div>
+            <form action="/vote/{{ page | string }}" method="post">
+                {{ form.csrf_token }}
+                <div class="field">
+                    {{ form.choices }}
+                </div>
+                <div class="field">
+                    {{ form.submit }}
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
+
 </html>

@@ -17,6 +17,7 @@ def db_check():
 def index():
     return render_template("index.html")
 
+
 @main_bp.route("/personal_data", methods=["GET", "POST"])
 def personal_data_page():
     form = PersonalDataForm()
@@ -25,7 +26,7 @@ def personal_data_page():
     if request.method == "POST":
         if form.validate_on_submit():
             response = make_response(redirect("/vote/1"))
-            response.set_cookie("student_id",  str(form.student_id.data))
+            response.set_cookie("student_id", str(form.student_id.data))
             response.set_cookie("classnum", str(form.classnum.data))
             return response
         else:
@@ -39,23 +40,26 @@ def personal_data_page():
 @main_bp.route("/vote/<int:page>", methods=["GET", "POST"])
 def vote_page(page=1):
     form = VoteForm()
-    form.choice.choices = pages[page]
+    form.choices.choices = pages[page]["choices"]
     if request.method == "GET":
         return render_template(
             "vote_base.html",
+            page=page,
             form=form,
+            name=pages[page]["name"]
         )
     if request.method == "POST":
         if form.validate_on_submit():
-            choice = form.choice.data
-            response = make_response(redirect("/vote/%d" % (page + 1)))
-            response.set_cookie(page, choice)
+            choice = form.choices.data
+            if page + 1 == len(pages):
+                response = make_response(redirect("/end"))
+            else:
+                response = make_response(redirect("/vote/%d" % (page + 1)))
+            response.set_cookie(str(page), choice)
+            return response
         else:
             flash("Error", category="alert")
-            return render_template(
-                "vote_base.html",
-                form=form,
-            )
+            return redirect("/vote/%d" % page)
 
 
 @main_bp.route("/end", methods=["GET"])
