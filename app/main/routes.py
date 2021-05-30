@@ -66,13 +66,13 @@ def vote_page(page=1):
 def process_all():
     student_id = request.cookies.get("student_id")
     classnum = request.cookies.get("classnum")
-    votes = []
+    votes = dict()
     for i in range(1, 9):   # 8 items
-        votes.append({i: request.cookies.get(str(i))})
-    if not (all([all(vote.values()) for vote in votes]) and student_id and classnum):
+        votes[i] = request.cookies.get(str(i))
+    if not (all(votes.values()) and student_id and classnum):
         flash("資料不完整，請重新填寫", category="alert")
     else:
-        flash("你已完成投票", category="success")
         add_record(student_id, classnum, votes)
+        flash("你已完成投票", category="success")
     return render_template("end.html")
     
