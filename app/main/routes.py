@@ -1,9 +1,18 @@
 from os import listdir
-from flask import render_template, redirect, request, make_response, flash
-import flask
+from datetime import datetime
+from flask import (
+    render_template,
+    redirect,
+    request,
+    make_response,
+    flash,
+    abort,
+    current_app,
+)
+from .. import log
 from ..db import db
 from ..forms import VoteForm, PersonalDataForm
-from ..pages import pages
+from ..data import pages
 from . import main_bp
 from .db_helper import add_record
 
@@ -16,11 +25,13 @@ def db_check():
 
 @main_bp.route("/", methods=["GET"])
 def index():
+    log(request)
     return render_template("index.html")
 
 
 @main_bp.route("/personal_data", methods=["GET", "POST"])
 def personal_data_page():
+    log(request)
     form = PersonalDataForm()
     if request.method == "GET":
         return render_template("personal_data.html", form=form)
@@ -40,8 +51,11 @@ def personal_data_page():
 @main_bp.route("/vote/", methods=["GET", "POST"])
 @main_bp.route("/vote/<int:page>", methods=["GET", "POST"])
 def vote_page(page=1):
+    log(request)
     form = VoteForm()
     form.choices.choices = pages[page - 1]
+    if page < 1 or page > 8:
+        abort(404)
     if request.method == "GET":
         return render_template(
             "vote_base.html",
@@ -64,10 +78,11 @@ def vote_page(page=1):
 
 @main_bp.route("/end", methods=["GET"])
 def process_all():
+    log(request)
     student_id = request.cookies.get("student_id")
     classnum = request.cookies.get("classnum")
     votes = dict()
-    for i in range(1, 9):   # 8 items
+    for i in range(1, 9):  # 8 items
         votes[i] = request.cookies.get(str(i))
     if not (all(votes.values()) and student_id and classnum):
         flash("資料不完整，請重新填寫", category="alert")
@@ -75,4 +90,3 @@ def process_all():
         add_record(student_id, classnum, votes)
         flash("你已完成投票", category="success")
     return render_template("end.html")
-    
