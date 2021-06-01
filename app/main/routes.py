@@ -82,7 +82,7 @@ def process_all():
     student_id = request.cookies.get("student_id")
     classnum = request.cookies.get("classnum")
     votes = dict()
-    for i in range(1, 9):  # 8 items
+    for i in range(1, 2):  # 8 items
         votes[i] = request.cookies.get(str(i))
     if not (all(votes.values()) and student_id and classnum):
         flash("資料不完整，請重新填寫", category="alert")
