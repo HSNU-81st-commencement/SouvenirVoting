@@ -54,7 +54,7 @@ def vote_page(page=1):
     log(request)
     form = VoteForm()
     form.choices.choices = pages[page - 1]
-    if page < 1 or page > 8:
+    if page != 1:
         abort(404)
     if request.method == "GET":
         return render_template(
